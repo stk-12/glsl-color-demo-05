@@ -26,13 +26,13 @@ void main() {
   // pos = vec3(pos.x, pos.y, pos.z + noise * 150.0);
 
 
-  vec2 noiseCoord = uv * vec2(3.0, 4.0); //uvを調整してノイズを細かく
+  vec2 noiseCoord = uv * vec2(4.0, 5.0); //uvを調整してノイズを細かく
    //noiseCoordを分割してさらに複雑に
   // float noise = snoise(vec3(noiseCoord.x + uTime * 5.0, noiseCoord.y, uTime * 2.5)); //右から左に流れるように
   float noise = snoise(vec3(noiseCoord.x - uTime * 0.5, noiseCoord.y, uTime * 1.5)); //左から右に流れるように
   // float noise = snoise(vec3(noiseCoord.x, noiseCoord.y - uTime * 5.0, uTime * 2.5)); //下から上に流れるように
   noise = max(0.0, noise); //ノイズが0以下にならないように
-  pos = vec3(pos.x, pos.y, pos.z + noise * 100.0);
+  pos = vec3(pos.x, pos.y, pos.z + noise * 120.0);
 
 
   vColor = uColors[2];
@@ -47,7 +47,7 @@ void main() {
     float noiseSeed = 1.0 + float(i) * 10.0;
 
     // ノイズのサイズ調整
-    vec2 noiseFreq = vec2(0.3, 0.4);
+    vec2 noiseFreq = vec2(0.4, 0.6);
 
     // float noise = snoise(
     //   vec3(

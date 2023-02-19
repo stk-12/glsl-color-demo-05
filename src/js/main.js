@@ -92,7 +92,7 @@ class Main {
 
   _addMesh() {
     //ジオメトリ
-    this.geometry = new THREE.PlaneGeometry(this.viewport.width, this.viewport.height, 80, 80);
+    this.geometry = new THREE.PlaneGeometry(this.viewport.width * 1.5, this.viewport.height * 1.5, 200, 200);
 
     //マテリアル
     this.material = new THREE.ShaderMaterial({
@@ -105,6 +105,9 @@ class Main {
 
     //メッシュ
     this.mesh = new THREE.Mesh(this.geometry, this.material);
+    
+    this.mesh.rotation.x -= 0.5;
+
     this.scene.add(this.mesh);
   }
 
@@ -121,7 +124,7 @@ class Main {
 
   _update() {
     const elapsedTime = this.clock.getElapsedTime();
-    this.uniforms.uTime.value = elapsedTime * 0.1;
+    this.uniforms.uTime.value = elapsedTime * 0.05;
 
     //レンダリング
     this.renderer.render(this.scene, this.camera);
