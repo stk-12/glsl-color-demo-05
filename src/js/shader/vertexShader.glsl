@@ -46,6 +46,9 @@ void main() {
     // さらにずらす
     float noiseSeed = 1.0 + float(i) * 10.0;
 
+    // ノイズのサイズ調整
+    vec2 noiseFreq = vec2(0.3, 0.4);
+
     // float noise = snoise(
     //   vec3(
     //     noiseCoord.x - uTime * 2.0,
@@ -68,10 +71,18 @@ void main() {
     //   )
     // );
 
+    // float noise = snoise(
+    //   vec3(
+    //     noiseCoord.x - uTime * noiseFlow,
+    //     noiseCoord.y,
+    //     uTime * noiseSpeed + noiseSeed
+    //   )
+    // ) * 0.5 + 0.5; //ノイズの勾配を下げてぼやけさせる
+
     float noise = snoise(
       vec3(
-        noiseCoord.x - uTime * noiseFlow,
-        noiseCoord.y,
+        noiseCoord.x * noiseFreq.x - uTime * noiseFlow, //ノイズのサイズ大きくしゆるやかに
+        noiseCoord.y * noiseFreq.y,
         uTime * noiseSpeed + noiseSeed
       )
     ) * 0.5 + 0.5; //ノイズの勾配を下げてぼやけさせる
