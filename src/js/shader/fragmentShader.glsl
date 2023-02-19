@@ -3,6 +3,7 @@ uniform float uTime;
 uniform sampler2D uTex;
 uniform vec2 uResolution;
 uniform vec2 uTexResolution;
+varying vec3 vColor;
 
 void main() {
   vec2 uv = vUv;
@@ -23,5 +24,7 @@ void main() {
   vec3 color = mix(RED, BLUE, 0.5);
   // gl_FragColor = vec4(color, 1.0);
 
-  gl_FragColor = vec4(uv, 0.0, 1.0);
+  // gl_FragColor = vec4(uv, 0.0, 1.0);
+
+  gl_FragColor = vec4(vColor, 1.0);
 }

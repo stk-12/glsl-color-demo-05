@@ -4,7 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import vertexSource from "./shader/vertexShader.glsl";
 import fragmentSource from "./shader/fragmentShader.glsl";
 
-import img from '../images/image.jpg';
+import palettes from 'nice-color-palettes';
 
 
 
@@ -27,12 +27,14 @@ class Main {
     this.material = null;
     this.mesh = null;
 
+    this.pallets = palettes[2].map((color) => new THREE.Color(color));
+
+    console.log(this.pallets);
+
+
     this.uniforms = {
       uTime: {
         value: 0.0
-      },
-      uTex: {
-        value: this.texture
       },
       uResolution: {
         value: new THREE.Vector2(this.viewport.width, this.viewport.height)
@@ -40,6 +42,9 @@ class Main {
       uTexResolution: {
         value: new THREE.Vector2(2048, 1024)
       },
+      uColors: {
+        value: this.pallets
+      }
     };
 
     this.clock = new THREE.Clock();
@@ -88,12 +93,6 @@ class Main {
   _addMesh() {
     //ジオメトリ
     this.geometry = new THREE.PlaneGeometry(this.viewport.width, this.viewport.height, 80, 80);
-
-    //テクスチャ
-    const loader = new THREE.TextureLoader();
-    this.uniforms.uTex.value = loader.load(img);
-
-    console.log(this.texture);
 
     //マテリアル
     this.material = new THREE.ShaderMaterial({

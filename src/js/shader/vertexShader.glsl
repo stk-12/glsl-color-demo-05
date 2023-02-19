@@ -1,5 +1,9 @@
 varying vec2 vUv;
+
 uniform float uTime;
+
+uniform vec3 uColors[5];
+varying vec3 vColor;
 
 #pragma glslify: snoise = require(glsl-noise/simplex/3d);
 
@@ -28,6 +32,9 @@ void main() {
   float noise = snoise(vec3(noiseCoord.x, noiseCoord.y - uTime * 5.0, uTime * 2.5)); //下から上に流れるように
   noise = max(0.0, noise); //ノイズが0以下にならないように
   pos = vec3(pos.x, pos.y, pos.z + noise * 100.0);
+
+
+  vColor = uColors[0];
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
