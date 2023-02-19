@@ -29,12 +29,18 @@ void main() {
   vec2 noiseCoord = uv * vec2(3.0, 4.0); //uvを調整してノイズを細かく
    //noiseCoordを分割してさらに複雑に
   // float noise = snoise(vec3(noiseCoord.x + uTime * 5.0, noiseCoord.y, uTime * 2.5)); //右から左に流れるように
-  float noise = snoise(vec3(noiseCoord.x, noiseCoord.y - uTime * 5.0, uTime * 2.5)); //下から上に流れるように
+  float noise = snoise(vec3(noiseCoord.x - uTime * 2.0, noiseCoord.y, uTime * 1.5)); //左から右に流れるように
+  // float noise = snoise(vec3(noiseCoord.x, noiseCoord.y - uTime * 5.0, uTime * 2.5)); //下から上に流れるように
   noise = max(0.0, noise); //ノイズが0以下にならないように
   pos = vec3(pos.x, pos.y, pos.z + noise * 100.0);
 
 
-  vColor = uColors[0];
+  vColor = uColors[2];
+
+  for(int i = 0; i < 1; i++){ //ループさせて色をミックス 数を増やしても上書きされるので2色のミックスになる
+    float noise = snoise(vec3(noiseCoord.x - uTime * 2.0, noiseCoord.y, uTime * 1.5)); //左から右に流れるように
+    vColor = mix(vColor, uColors[i], noise);
+  }
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
