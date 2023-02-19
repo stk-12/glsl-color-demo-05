@@ -60,12 +60,21 @@ void main() {
     //     uTime * noiseSpeed
     //   )); //左から右に流れるように
 
+    // float noise = snoise(
+    //   vec3(
+    //     noiseCoord.x - uTime * noiseFlow,
+    //     noiseCoord.y,
+    //     uTime * noiseSpeed + noiseSeed
+    //   )
+    // );
+
     float noise = snoise(
       vec3(
         noiseCoord.x - uTime * noiseFlow,
         noiseCoord.y,
         uTime * noiseSpeed + noiseSeed
-      )); //左から右に流れるように
+      )
+    ) * 0.5 + 0.5; //ノイズの勾配を下げてぼやけさせる
 
     vColor = mix(vColor, uColors[i], noise);
   }
