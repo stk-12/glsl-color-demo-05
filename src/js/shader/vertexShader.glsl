@@ -37,8 +37,36 @@ void main() {
 
   vColor = uColors[2];
 
-  for(int i = 0; i < 1; i++){ //ループさせて色をミックス 数を増やしても上書きされるので2色のミックスになる
-    float noise = snoise(vec3(noiseCoord.x - uTime * 2.0, noiseCoord.y, uTime * 1.5)); //左から右に流れるように
+  for(int i = 0; i < 5; i++){ //ループさせて色をミックス
+
+    // ノイズをずらす
+    float noiseFlow = 2.0 + float(i) * 0.3;
+    float noiseSpeed = 4.0 + float(i) * 0.3;
+
+    // さらにずらす
+    float noiseSeed = 1.0 + float(i) * 10.0;
+
+    // float noise = snoise(
+    //   vec3(
+    //     noiseCoord.x - uTime * 2.0,
+    //     noiseCoord.y,
+    //     uTime * 1.5
+    //   )); //左から右に流れるように
+
+    // float noise = snoise(
+    //   vec3(
+    //     noiseCoord.x - uTime * noiseFlow,
+    //     noiseCoord.y,
+    //     uTime * noiseSpeed
+    //   )); //左から右に流れるように
+
+    float noise = snoise(
+      vec3(
+        noiseCoord.x - uTime * noiseFlow,
+        noiseCoord.y,
+        uTime * noiseSpeed + noiseSeed
+      )); //左から右に流れるように
+
     vColor = mix(vColor, uColors[i], noise);
   }
 

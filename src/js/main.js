@@ -27,7 +27,7 @@ class Main {
     this.material = null;
     this.mesh = null;
 
-    this.pallets = palettes[6].map((color) => new THREE.Color(color));
+    this.pallets = palettes[2].map((color) => new THREE.Color(color));
 
     console.log(this.pallets);
 
