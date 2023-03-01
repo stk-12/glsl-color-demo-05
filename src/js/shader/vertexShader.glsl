@@ -1,7 +1,7 @@
 varying vec2 vUv;
 
 uniform float uTime;
-
+uniform vec2 uNoiseLoudness;
 uniform vec3 uColors[5];
 varying vec3 vColor;
 
@@ -26,7 +26,8 @@ void main() {
   // pos = vec3(pos.x, pos.y, pos.z + noise * 150.0);
 
 
-  vec2 noiseCoord = uv * vec2(4.0, 5.0); //uvを調整してノイズを細かく
+  // vec2 noiseCoord = uv * vec2(4.0, 5.0); //uvを調整してノイズを細かく
+  vec2 noiseCoord = uv * vec2(uNoiseLoudness.x, uNoiseLoudness.y); //uvを調整してノイズを細かく
    //noiseCoordを分割してさらに複雑に
   // float noise = snoise(vec3(noiseCoord.x + uTime * 5.0, noiseCoord.y, uTime * 2.5)); //右から左に流れるように
   float noise = snoise(vec3(noiseCoord.x - uTime * 0.5, noiseCoord.y, uTime * 1.5)); //左から右に流れるように

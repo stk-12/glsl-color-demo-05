@@ -1,6 +1,7 @@
 import '../css/style.scss'
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import GUI from "lil-gui";
 import vertexSource from "./shader/vertexShader.glsl";
 import fragmentSource from "./shader/fragmentShader.glsl";
 
@@ -22,14 +23,19 @@ class Main {
     this.cameraFov = 45;
     this.cameraFovRadian = (this.cameraFov / 2) * (Math.PI / 180);
     this.cameraDistance = (this.viewport.height / 2) / Math.tan(this.cameraFovRadian);
-    this.controls = null;
+    // this.controls = null;
+    this.gui = new GUI();
     this.geometry = null;
     this.material = null;
     this.mesh = null;
 
-    this.pallets = palettes[2].map((color) => new THREE.Color(color));
+    // this.pallets = palettes[2].map((color) => new THREE.Color(color));
 
-    console.log(this.pallets);
+    // console.log(this.pallets);
+
+    this.indexPallets = 96;
+    this.pallets = null;
+    this._setPallets(this.indexPallets);
 
 
     this.uniforms = {
@@ -44,7 +50,10 @@ class Main {
       },
       uColors: {
         value: this.pallets
-      }
+      },
+      uNoiseLoudness: {
+        value: new THREE.Vector2(4.0, 7.0)
+      },
     };
 
     this.clock = new THREE.Clock();
@@ -65,23 +74,39 @@ class Main {
   }
 
   _setCamera() {
-    // this.camera = new THREE.PerspectiveCamera(45, this.viewport.width / this.viewport.height, 1, 100);
-    // this.camera.position.set(0, 0, 5);
-    // this.scene.add(this.camera);
-
-    //ウインドウとWebGL座標を一致させる
-    // const fov = 45;
-    // const fovRadian = (fov / 2) * (Math.PI / 180); //視野角をラジアンに変換
-    // const distance = (this.viewport.height / 2) / Math.tan(fovRadian); //ウインドウぴったりのカメラ距離
     this.camera = new THREE.PerspectiveCamera(this.cameraFov, this.viewport.width / this.viewport.height, 1, this.cameraDistance * 2);
     this.camera.position.z = this.cameraDistance;
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     this.scene.add(this.camera);
   }
 
-  _setControlls() {
-    this.controls = new OrbitControls(this.camera, this.canvas);
-    this.controls.enableDamping = true;
+  _setPallets(index) {
+    this.pallets = palettes[index].map((color) => new THREE.Color(color));
+  }
+
+  // _setControlls() {
+  //   this.controls = new OrbitControls(this.camera, this.canvas);
+  //   this.controls.enableDamping = true;
+  // }
+
+  _setGui() {
+    const colorGuiObj = {
+      changeColor: ()=> {
+        this.indexPallets = Math.floor(Math.random() * 100);
+        console.log(this.indexPallets);
+        this._setPallets(this.indexPallets);
+        // console.log(this.pallets);
+
+        this.uniforms.uColors.value = this.pallets;
+      }
+    }
+
+    this.gui.add(this.uniforms.uNoiseLoudness.value, 'x').min(0.0).max(25.0).step(0.2).name('ノイズ X軸')
+    this.gui.add(this.uniforms.uNoiseLoudness.value, 'y').min(0.0).max(25.0).step(0.2).name('ノイズ Y軸')
+    // this.gui.add(this.uniforms.uTimeSpeed, 'value').min(0.001).max(5.0).step(0.001).name('スピード')
+    this.gui.add(colorGuiObj, 'changeColor').name('配色を変更').listen()
+
+    
   }
 
   _setLight() {
@@ -92,7 +117,7 @@ class Main {
 
   _addMesh() {
     //ジオメトリ
-    this.geometry = new THREE.PlaneGeometry(this.viewport.width * 1.5, this.viewport.height * 1.5, 200, 200);
+    this.geometry = new THREE.PlaneGeometry(this.viewport.width * 2.0, this.viewport.height * 2.0, 200, 200);
 
     //マテリアル
     this.material = new THREE.ShaderMaterial({
@@ -114,7 +139,8 @@ class Main {
   init() {
     this._setRenderer();
     this._setCamera();
-    this._setControlls();
+    this._setGui();
+    // this._setControlls();
     this._setLight();
     this._addMesh();
 
@@ -128,7 +154,7 @@ class Main {
 
     //レンダリング
     this.renderer.render(this.scene, this.camera);
-    this.controls.update();
+    // this.controls.update();
     requestAnimationFrame(this._update.bind(this));
   }
 
@@ -148,8 +174,8 @@ class Main {
     // uniforms変数に反映
     this.mesh.material.uniforms.uResolution.value.set(this.viewport.width, this.viewport.height);
     // meshのscale設定
-    const scaleX = Math.round(this.viewport.width / this.mesh.geometry.parameters.width * 100) / 100 + 0.01;
-    const scaleY = Math.round(this.viewport.height / this.mesh.geometry.parameters.height * 100) / 100 + 0.01;
+    const scaleX = Math.round(this.viewport.width * 2.0 / this.mesh.geometry.parameters.width * 100) / 100 + 0.01;
+    const scaleY = Math.round(this.viewport.height * 2.0 / this.mesh.geometry.parameters.height * 100) / 100 + 0.01;
     this.mesh.scale.set(scaleX, scaleY, 1);
   }
 
